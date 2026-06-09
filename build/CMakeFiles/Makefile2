@@ -66,23 +66,27 @@ CMAKE_BINARY_DIR = /Users/ayberkgurses/Desktop/repos/fluid_simulation/build
 all: CMakeFiles/fluid_simulation.dir/all
 all: _deps/glfw-build/all
 all: _deps/glad-build/all
+all: _deps/glm-build/all
 .PHONY : all
 
 # The main recursive "codegen" target.
 codegen: CMakeFiles/fluid_simulation.dir/codegen
 codegen: _deps/glfw-build/codegen
 codegen: _deps/glad-build/codegen
+codegen: _deps/glm-build/codegen
 .PHONY : codegen
 
 # The main recursive "preinstall" target.
 preinstall: _deps/glfw-build/preinstall
 preinstall: _deps/glad-build/preinstall
+preinstall: _deps/glm-build/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
 clean: CMakeFiles/fluid_simulation.dir/clean
 clean: _deps/glfw-build/clean
 clean: _deps/glad-build/clean
+clean: _deps/glm-build/clean
 .PHONY : clean
 
 #=============================================================================
@@ -167,6 +171,44 @@ _deps/glfw-build/src/preinstall:
 _deps/glfw-build/src/clean: _deps/glfw-build/src/CMakeFiles/glfw.dir/clean
 _deps/glfw-build/src/clean: _deps/glfw-build/src/CMakeFiles/update_mappings.dir/clean
 .PHONY : _deps/glfw-build/src/clean
+
+#=============================================================================
+# Directory level rules for directory _deps/glm-build
+
+# Recursive "all" directory target.
+_deps/glm-build/all: _deps/glm-build/glm/all
+.PHONY : _deps/glm-build/all
+
+# Recursive "codegen" directory target.
+_deps/glm-build/codegen: _deps/glm-build/glm/codegen
+.PHONY : _deps/glm-build/codegen
+
+# Recursive "preinstall" directory target.
+_deps/glm-build/preinstall: _deps/glm-build/glm/preinstall
+.PHONY : _deps/glm-build/preinstall
+
+# Recursive "clean" directory target.
+_deps/glm-build/clean: _deps/glm-build/glm/clean
+.PHONY : _deps/glm-build/clean
+
+#=============================================================================
+# Directory level rules for directory _deps/glm-build/glm
+
+# Recursive "all" directory target.
+_deps/glm-build/glm/all:
+.PHONY : _deps/glm-build/glm/all
+
+# Recursive "codegen" directory target.
+_deps/glm-build/glm/codegen:
+.PHONY : _deps/glm-build/glm/codegen
+
+# Recursive "preinstall" directory target.
+_deps/glm-build/glm/preinstall:
+.PHONY : _deps/glm-build/glm/preinstall
+
+# Recursive "clean" directory target.
+_deps/glm-build/glm/clean:
+.PHONY : _deps/glm-build/glm/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/fluid_simulation.dir

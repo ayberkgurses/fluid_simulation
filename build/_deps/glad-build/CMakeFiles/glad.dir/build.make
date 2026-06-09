@@ -71,7 +71,7 @@ include _deps/glad-build/CMakeFiles/glad.dir/flags.make
 
 _deps/glad-build/include/glad/glad.h:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating GLAD"
-	cd /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glad-src && /opt/homebrew/Frameworks/Python.framework/Versions/3.13/bin/python3.13 -m glad --profile=compatibility --out-path=/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glad-build --api= --generator=c --extensions= --spec=gl
+	cd /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glad-src && /opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/bin/python3.13 -m glad --profile=compatibility --out-path=/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glad-build --api= --generator=c --extensions= --spec=gl
 
 _deps/glad-build/src/glad.c: _deps/glad-build/include/glad/glad.h
 	@$(CMAKE_COMMAND) -E touch_nocreate _deps/glad-build/src/glad.c

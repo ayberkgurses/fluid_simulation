@@ -18,6 +18,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "_deps/glfw-src/CMakeLists.txt"
   "_deps/glfw-src/docs/CMakeLists.txt"
   "_deps/glfw-src/src/CMakeLists.txt"
+  "_deps/glm-src/CMakeLists.txt"
+  "_deps/glm-src/glm/CMakeLists.txt"
   "/opt/homebrew/share/cmake/Modules/BasicConfigVersion-SameMajorVersion.cmake.in"
   "/opt/homebrew/share/cmake/Modules/CMakeCInformation.cmake"
   "/opt/homebrew/share/cmake/Modules/CMakeCXXInformation.cmake"
@@ -80,6 +82,7 @@ set(CMAKE_MAKEFILE_OUTPUTS
 set(CMAKE_MAKEFILE_PRODUCTS
   "_deps/glfw-subbuild/CMakeLists.txt"
   "_deps/glad-subbuild/CMakeLists.txt"
+  "_deps/glm-subbuild/CMakeLists.txt"
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   "_deps/glfw-build/src/glfw3Config.cmake"
   "_deps/glfw-build/src/glfw3ConfigVersion.cmake"
@@ -89,6 +92,8 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "_deps/glfw-build/src/CMakeFiles/CMakeDirectoryInformation.cmake"
   "_deps/glfw-build/docs/CMakeFiles/CMakeDirectoryInformation.cmake"
   "_deps/glad-build/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "_deps/glm-build/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "_deps/glm-build/glm/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:

@@ -25,7 +25,7 @@ CMAKE_AR:FILEPATH=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDef
 
 //Choose the type of build, options are: None Debug Release RelWithDebInfo
 // MinSizeRel ...
-CMAKE_BUILD_TYPE:STRING=
+CMAKE_BUILD_TYPE:STRING=Release
 
 //Enable/Disable color output during build.
 CMAKE_COLOR_MAKEFILE:BOOL=ON
@@ -300,6 +300,10 @@ FETCHCONTENT_SOURCE_DIR_GLAD:PATH=
 // for glfw
 FETCHCONTENT_SOURCE_DIR_GLFW:PATH=
 
+//When not empty, overrides where to find pre-populated content
+// for glm
+FETCHCONTENT_SOURCE_DIR_GLM:PATH=
+
 //Enables UPDATE_DISCONNECTED behavior for all content population
 FETCHCONTENT_UPDATES_DISCONNECTED:BOOL=OFF
 
@@ -308,6 +312,9 @@ FETCHCONTENT_UPDATES_DISCONNECTED_GLAD:BOOL=OFF
 
 //Enables UPDATE_DISCONNECTED behavior just for population of glfw
 FETCHCONTENT_UPDATES_DISCONNECTED_GLFW:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of glm
+FETCHCONTENT_UPDATES_DISCONNECTED_GLM:BOOL=OFF
 
 //Git command line client
 GIT_EXECUTABLE:FILEPATH=/usr/bin/git
@@ -404,6 +411,15 @@ fluid_simulation_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 fluid_simulation_SOURCE_DIR:STATIC=/Users/ayberkgurses/Desktop/repos/fluid_simulation
+
+//Value Computed by CMake
+glm_BINARY_DIR:STATIC=/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glm-build
+
+//Value Computed by CMake
+glm_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+glm_SOURCE_DIR:STATIC=/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glm-src
 
 
 ########################
@@ -538,7 +554,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=5
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=7
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -588,7 +604,7 @@ DOXYGEN_EXECUTABLE-ADVANCED:INTERNAL=1
 //Details about finding OpenGL
 FIND_PACKAGE_MESSAGE_DETAILS_OpenGL:INTERNAL=[/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks/OpenGL.framework][/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks/OpenGL.framework][c ][v()]
 //Details about finding Python
-FIND_PACKAGE_MESSAGE_DETAILS_Python:INTERNAL=[/opt/homebrew/Frameworks/Python.framework/Versions/3.13/bin/python3.13][cfound components: Interpreter ][v3.13.3()]
+FIND_PACKAGE_MESSAGE_DETAILS_Python:INTERNAL=[/opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/bin/python3.13][cfound components: Interpreter ][v3.13.3()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //ADVANCED property for variable: GIT_EXECUTABLE
@@ -612,10 +628,10 @@ _Python_Compiler_REASON_FAILURE:INTERNAL=
 //Development reason failure
 _Python_Development_REASON_FAILURE:INTERNAL=
 //Path to a program.
-_Python_EXECUTABLE:INTERNAL=/opt/homebrew/Frameworks/Python.framework/Versions/3.13/bin/python3.13
+_Python_EXECUTABLE:INTERNAL=/opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/bin/python3.13
 //Python Properties
 _Python_INTERPRETER_PROPERTIES:INTERNAL=Python;3;13;3;64;32;<none>;cpython-313-darwin;abi3;/opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13;/opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13;/opt/homebrew/lib/python3.13/site-packages;/opt/homebrew/lib/python3.13/site-packages
-_Python_INTERPRETER_SIGNATURE:INTERNAL=7a1f714cc7198cb3c0d06752fabdd0bf
+_Python_INTERPRETER_SIGNATURE:INTERNAL=58c625ddda98ba9f4929b9b6c4b74bb2
 //NumPy reason failure
 _Python_NumPy_REASON_FAILURE:INTERNAL=
 

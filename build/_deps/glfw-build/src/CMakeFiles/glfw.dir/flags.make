@@ -6,7 +6,7 @@ C_DEFINES = -D_GLFW_COCOA
 
 C_INCLUDES = -I/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glfw-src/include -I/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glfw-src/src -I/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glfw-build/src
 
-C_FLAGSarm64 = -std=c99 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -mmacosx-version-min=14.4 -fPIC -Wall
+C_FLAGSarm64 = -O3 -DNDEBUG -std=c99 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -mmacosx-version-min=14.4 -fPIC -Wall
 
-C_FLAGS = -std=c99 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -mmacosx-version-min=14.4 -fPIC -Wall
+C_FLAGS = -O3 -DNDEBUG -std=c99 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -mmacosx-version-min=14.4 -fPIC -Wall
 

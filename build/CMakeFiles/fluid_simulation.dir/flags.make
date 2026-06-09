@@ -4,9 +4,9 @@
 # compile CXX with /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++
 CXX_DEFINES = -DGLFW_INCLUDE_NONE
 
-CXX_INCLUDES = -I/Users/ayberkgurses/Desktop/repos/fluid_simulation/include -I/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glad-src/include -I/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glfw-src/include -I/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glad-build/include -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks
+CXX_INCLUDES = -I/Users/ayberkgurses/Desktop/repos/fluid_simulation/include -I/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glad-src/include -I/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glm-src -I/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glfw-src/include -I/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glad-build/include -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks
 
-CXX_FLAGSarm64 = -std=c++17 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -mmacosx-version-min=14.4 -Wall -Wextra -Wpedantic
+CXX_FLAGSarm64 = -O3 -DNDEBUG -std=c++17 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -mmacosx-version-min=14.4 -Wall -Wextra -Wpedantic
 
-CXX_FLAGS = -std=c++17 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -mmacosx-version-min=14.4 -Wall -Wextra -Wpedantic
+CXX_FLAGS = -O3 -DNDEBUG -std=c++17 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -mmacosx-version-min=14.4 -Wall -Wextra -Wpedantic
 

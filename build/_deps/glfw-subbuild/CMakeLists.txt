@@ -27,7 +27,7 @@ set_property(GLOBAL PROPERTY _CMAKE_FindGit_GIT_EXECUTABLE_VERSION
 
 include(ExternalProject)
 ExternalProject_Add(glfw-populate
-                     "UPDATE_DISCONNECTED" "False" "GIT_REPOSITORY" "https://github.com/glfw/glfw.git" "EXTERNALPROJECT_INTERNAL_ARGUMENT_SEPARATOR" "GIT_TAG" "latest"
+                     "UPDATE_DISCONNECTED" "False" "GIT_REPOSITORY" "https://github.com/glfw/glfw.git" "EXTERNALPROJECT_INTERNAL_ARGUMENT_SEPARATOR" "GIT_TAG" "3.4"
                     SOURCE_DIR          "/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glfw-src"
                     BINARY_DIR          "/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glfw-build"
                     CONFIGURE_COMMAND   ""

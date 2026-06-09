@@ -52,13 +52,13 @@ endif()
 
 execute_process(
   COMMAND "/usr/bin/git"
-          checkout "latest" --
+          checkout "3.4" --
   WORKING_DIRECTORY "/Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glfw-src"
   RESULT_VARIABLE error_code
   ${maybe_show_command}
 )
 if(error_code)
-  message(FATAL_ERROR "Failed to checkout tag: 'latest'")
+  message(FATAL_ERROR "Failed to checkout tag: '3.4'")
 endif()
 
 set(init_submodules TRUE)
