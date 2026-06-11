@@ -846,7 +846,9 @@ CMakeFiles/fluid_simulation.dir/src/main.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1/cstdarg \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1/__memory/temp_value.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1/__split_buffer \
-  /Users/ayberkgurses/Desktop/repos/fluid_simulation/include/Camera.h \
+  /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glad-build/include/glad/glad.h \
+  /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glad-build/include/KHR/khrplatform.h \
+  /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glfw-src/include/GLFW/glfw3.h \
   /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glm-src/glm/glm.hpp \
   /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glm-src/glm/detail/_fixes.hpp \
   /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glm-src/glm/detail/setup.hpp \
@@ -1025,9 +1027,6 @@ CMakeFiles/fluid_simulation.dir/src/main.cpp.o: \
   /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glm-src/glm/gtc/../geometric.hpp \
   /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glm-src/glm/gtc/../trigonometric.hpp \
   /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glm-src/glm/gtc/../matrix.hpp \
-  /Users/ayberkgurses/Desktop/repos/fluid_simulation/include/Shader.h \
-  /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glad-build/include/glad/glad.h \
-  /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glad-build/include/KHR/khrplatform.h \
   /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glm-src/glm/gtc/type_ptr.hpp \
   /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glm-src/glm/gtc/../gtc/quaternion.hpp \
   /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glm-src/glm/gtc/../gtc/constants.hpp \
@@ -1107,5 +1106,4 @@ CMakeFiles/fluid_simulation.dir/src/main.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1/iostream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1/istream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1/ostream \
-  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1/bitset \
-  /Users/ayberkgurses/Desktop/repos/fluid_simulation/build/_deps/glfw-src/include/GLFW/glfw3.h
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1/bitset

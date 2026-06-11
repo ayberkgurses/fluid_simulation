@@ -1956,12 +1956,8 @@ CMakeFiles/fluid_simulation.dir/src/main.cpp.o: /Users/ayberkgurses/Desktop/repo
   _deps/glm-src/glm/vec3.hpp \
   _deps/glm-src/glm/vec4.hpp \
   _deps/glm-src/glm/vector_relational.hpp \
-  /Users/ayberkgurses/Desktop/repos/fluid_simulation/include/Camera.h \
-  /Users/ayberkgurses/Desktop/repos/fluid_simulation/include/FluidSim.h \
-  /Users/ayberkgurses/Desktop/repos/fluid_simulation/include/Shader.h
+  /Users/ayberkgurses/Desktop/repos/fluid_simulation/include/FluidSim.h
 
-
-/Users/ayberkgurses/Desktop/repos/fluid_simulation/include/Shader.h:
 
 _deps/glm-src/glm/integer.hpp:
 
@@ -3128,8 +3124,6 @@ _deps/glm-src/glm/ext/matrix_double2x2.hpp:
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1/errno.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1/__algorithm/is_sorted.h:
-
-/Users/ayberkgurses/Desktop/repos/fluid_simulation/include/Camera.h:
 
 _deps/glm-src/glm/ext/vector_int1_sized.hpp:
 
