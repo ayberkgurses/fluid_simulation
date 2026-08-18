@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -rf build)",
+      "Bash(mkdir build *)",
+      "Bash(cmake .. -DCMAKE_BUILD_TYPE=Release)",
+      "Bash(cmake --build . --config Release -j4)",
+      "Bash(cmake --build /Users/ayberkgurses/Desktop/repos/fluid_simulation/build --config Release -j4)",
+      "Bash(cmake --build . --config Release)",
+      "Bash(./fluid_simulation)",
+      "Bash(kill %1)",
+      "Bash(echo \"exit $?\")",
+      "Read(//tmp/**)",
+      "WebFetch(domain:api.github.com)",
+      "WebSearch",
+      "Bash(cmake --build .)",
+      "WebFetch(domain:paulbourke.net)",
+      "Bash(git pull *)"
+    ]
+  }
+}

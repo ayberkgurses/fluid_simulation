@@ -2,132 +2,240 @@
 #include <algorithm>
 #include <cmath>
 
-FluidSim::FluidSim(int width, int height)
-    : width(width)
-    , height(height)
-    , size(width * height)
-    , density(size, 0.0f)
-    , densityPrev(size, 0.0f)
-    , velX(size, 0.0f)
-    , velY(size, 0.0f)
-    , velXPrev(size, 0.0f)
-    , velYPrev(size, 0.0f)
-{
-}
+static constexpr float PI = 3.14159265358979323846f;
 
+FluidSim::FluidSim() : numCells(0) {}
 FluidSim::~FluidSim() = default;
 
 void FluidSim::reset() {
-    std::fill(density.begin(), density.end(), 0.0f);
-    std::fill(densityPrev.begin(), densityPrev.end(), 0.0f);
-    std::fill(velX.begin(), velX.end(), 0.0f);
-    std::fill(velY.begin(), velY.end(), 0.0f);
-    std::fill(velXPrev.begin(), velXPrev.end(), 0.0f);
-    std::fill(velYPrev.begin(), velYPrev.end(), 0.0f);
+    particles.clear();
+    predX.clear(); predY.clear(); predZ.clear();
+}
+
+void FluidSim::spawnBlock(float cx, float cy, float cz,
+                          int cols, int rows, int layers, float spacing) {
+    float ox = cx - (cols  - 1) * spacing * 0.5f;
+    float oy = cy - (rows  - 1) * spacing * 0.5f;
+    float oz = cz - (layers - 1) * spacing * 0.5f;
+    for (int l = 0; l < layers; ++l)
+    for (int r = 0; r < rows;   ++r)
+    for (int c = 0; c < cols;   ++c) {
+        Particle p{};
+        p.x = ox + c * spacing;
+        p.y = oy + r * spacing;
+        p.z = oz + l * spacing;
+        particles.push_back(p);
+    }
+    int n = (int)particles.size();
+    predX.resize(n); predY.resize(n); predZ.resize(n);
+    cellKeys.resize(n); particleIndices.resize(n);
+}
+
+// ---- Kernels (3D normalized) ----
+float FluidSim::spikyPow2(float dst) const {
+    if (dst >= smoothingRadius) return 0.0f;
+    float v = smoothingRadius - dst;
+    return v * v * (15.0f / (2.0f * PI * std::pow(smoothingRadius, 5)));
+}
+
+float FluidSim::spikyPow2Deriv(float dst) const {
+    if (dst <= 1e-8f || dst >= smoothingRadius) return 0.0f;
+    float v = smoothingRadius - dst;
+    return -v * (15.0f / (PI * std::pow(smoothingRadius, 5)));
+}
+
+float FluidSim::spikyPow3(float dst) const {
+    if (dst >= smoothingRadius) return 0.0f;
+    float v = smoothingRadius - dst;
+    return v * v * v * (15.0f / (PI * std::pow(smoothingRadius, 6)));
+}
+
+float FluidSim::spikyPow3Deriv(float dst) const {
+    if (dst <= 1e-8f || dst >= smoothingRadius) return 0.0f;
+    float v = smoothingRadius - dst;
+    return -v * v * (45.0f / (PI * std::pow(smoothingRadius, 6)));
+}
+
+float FluidSim::poly6(float dst) const {
+    if (dst >= smoothingRadius) return 0.0f;
+    float v = smoothingRadius * smoothingRadius - dst * dst;
+    return v * v * v * (315.0f / (64.0f * PI * std::pow(smoothingRadius, 9)));
+}
+
+// ---- Spatial hash ----
+
+void FluidSim::posToCell(float x, float y, float z, int& cx, int& cy, int& cz) const {
+    cx = (int)std::floor(x / smoothingRadius);
+    cy = (int)std::floor(y / smoothingRadius);
+    cz = (int)std::floor(z / smoothingRadius);
+}
+
+uint32_t FluidSim::cellHash(int cx, int cy, int cz) const {
+    uint32_t a = (uint32_t)cx * 15823u;
+    uint32_t b = (uint32_t)cy * 9737333u;
+    uint32_t c = (uint32_t)cz * 440817757u;
+    return (a + b + c) % (uint32_t)numCells;
+}
+
+void FluidSim::buildSpatialHash() {
+    int n = (int)particles.size();
+    numCells = n;
+    cellKeys.resize(n);
+    particleIndices.resize(n);
+    cellStart.assign(numCells + 1, 0);
+
+    for (int i = 0; i < n; ++i) {
+        int cx, cy, cz;
+        posToCell(predX[i], predY[i], predZ[i], cx, cy, cz);
+        cellKeys[i] = cellHash(cx, cy, cz);
+        particleIndices[i] = (uint32_t)i;
+    }
+
+    // Counting sort
+    for (int i = 0; i < n; ++i) cellStart[cellKeys[i] + 1]++;
+    for (int i = 1; i <= numCells; ++i) cellStart[i] += cellStart[i-1];
+
+    std::vector<uint32_t> sorted(n);
+    std::vector<uint32_t> offset = cellStart;
+    for (int i = 0; i < n; ++i)
+        sorted[offset[cellKeys[i]]++] = (uint32_t)i;
+    particleIndices = sorted;
+}
+
+void FluidSim::computeDensities() {
+    int n = (int)particles.size();
+    for (int i = 0; i < n; ++i) {
+        float density = 0.0f;
+        int cx0, cy0, cz0;
+        posToCell(predX[i], predY[i], predZ[i], cx0, cy0, cz0);
+        for (int dz = -1; dz <= 1; ++dz)
+        for (int dy = -1; dy <= 1; ++dy)
+        for (int dx = -1; dx <= 1; ++dx) {
+            uint32_t key = cellHash(cx0+dx, cy0+dy, cz0+dz);
+            for (uint32_t k = cellStart[key]; k < cellStart[key+1]; ++k) {
+                int j = (int)particleIndices[k];
+                float ox = predX[j]-predX[i], oy = predY[j]-predY[i], oz = predZ[j]-predZ[i];
+                float dst = std::sqrt(ox*ox + oy*oy + oz*oz);
+                density += spikyPow2(dst);
+            }
+        }
+        particles[i].density = density;
+    }
+}
+
+static float densityToPressure(float density, float targetDensity, float pressureMultiplier) {
+    return (density - targetDensity) * pressureMultiplier;
+}
+
+void FluidSim::computePressureAndViscosity(float dt) {
+    int n = (int)particles.size();
+
+    // We need near-densities; compute both in one pass via a temp array
+    std::vector<float> nearDens(n, 0.0f);
+    for (int i = 0; i < n; ++i) {
+        float nd = 0.0f;
+        int cx0, cy0, cz0;
+        posToCell(predX[i], predY[i], predZ[i], cx0, cy0, cz0);
+        for (int dz = -1; dz <= 1; ++dz)
+        for (int dy = -1; dy <= 1; ++dy)
+        for (int dx = -1; dx <= 1; ++dx) {
+            uint32_t key = cellHash(cx0+dx, cy0+dy, cz0+dz);
+            for (uint32_t k = cellStart[key]; k < cellStart[key+1]; ++k) {
+                int j = (int)particleIndices[k];
+                float ox = predX[j]-predX[i], oy = predY[j]-predY[i], oz = predZ[j]-predZ[i];
+                float dst = std::sqrt(ox*ox + oy*oy + oz*oz);
+                nd += spikyPow3(dst);
+            }
+        }
+        nearDens[i] = nd;
+    }
+
+    for (int i = 0; i < n; ++i) {
+        float pressure_i     = densityToPressure(particles[i].density, targetDensity, pressureMultiplier);
+        float nearPressure_i = nearDens[i] * nearPressureMultiplier;
+
+        float fx = 0.0f, fy = 0.0f, fz = 0.0f;
+
+        int cx0, cy0, cz0;
+        posToCell(predX[i], predY[i], predZ[i], cx0, cy0, cz0);
+
+        for (int dz = -1; dz <= 1; ++dz)
+        for (int dy = -1; dy <= 1; ++dy)
+        for (int dx = -1; dx <= 1; ++dx) {
+            uint32_t key = cellHash(cx0+dx, cy0+dy, cz0+dz);
+            for (uint32_t k = cellStart[key]; k < cellStart[key+1]; ++k) {
+                int j = (int)particleIndices[k];
+                if (j == i) continue;
+
+                float ox = predX[j]-predX[i], oy = predY[j]-predY[i], oz = predZ[j]-predZ[i];
+                float dst = std::sqrt(ox*ox + oy*oy + oz*oz);
+                if (dst < 1e-8f) continue;
+
+                float nx = ox/dst, ny = oy/dst, nz = oz/dst;
+
+                // Pressure
+                float pressure_j     = densityToPressure(particles[j].density, targetDensity, pressureMultiplier);
+                float nearPressure_j = nearDens[j] * nearPressureMultiplier;
+
+                float sharedPressure     = (pressure_i + pressure_j) * 0.5f;
+                float sharedNearPressure = (nearPressure_i + nearPressure_j) * 0.5f;
+
+                float dj = std::max(particles[j].density, 1e-6f);
+                float pf = sharedPressure     * spikyPow2Deriv(dst) / dj;
+                float nf = sharedNearPressure * spikyPow3Deriv(dst) / dj;
+                fx += (pf + nf) * nx;
+                fy += (pf + nf) * ny;
+                fz += (pf + nf) * nz;
+
+                // Viscosity
+                float w = poly6(dst);
+                fx += viscosityStrength * (particles[j].vx - particles[i].vx) * w;
+                fy += viscosityStrength * (particles[j].vy - particles[i].vy) * w;
+                fz += viscosityStrength * (particles[j].vz - particles[i].vz) * w;
+            }
+        }
+
+        float di = std::max(particles[i].density, 1e-6f);
+        particles[i].vx += fx / di * dt;
+        particles[i].vy += fy / di * dt;
+        particles[i].vz += fz / di * dt;
+    }
+}
+
+void FluidSim::resolveCollision(Particle& p) {
+    auto bounce = [&](float pos, float vel, float half, float& outPos, float& outVel) {
+        if (pos < -half) { outPos = -half; outVel = std::abs(vel) * collisionDamping; }
+        else if (pos > half) { outPos = half; outVel = -std::abs(vel) * collisionDamping; }
+        else { outPos = pos; outVel = vel; }
+    };
+    bounce(p.x, p.vx, boundsHalfX, p.x, p.vx);
+    bounce(p.y, p.vy, boundsHalfY, p.y, p.vy);
+    bounce(p.z, p.vz, boundsHalfZ, p.z, p.vz);
 }
 
 void FluidSim::step(float dt) {
-    // 1) Add sources from previous frame
-    addSource(density, densityPrev, dt);
-    addSource(velX, velXPrev, dt);
-    addSource(velY, velYPrev, dt);
+    int n = (int)particles.size();
+    if (n == 0) return;
 
-    // 2) Diffuse velocity
-    diffuse(1, velXPrev, velX, 0.0001f, dt);
-    diffuse(2, velYPrev, velY, 0.0001f, dt);
+    predX.resize(n); predY.resize(n); predZ.resize(n);
 
-    // 3) Project velocity to make it divergence-free
-    project(velXPrev, velYPrev, densityPrev, density);
-
-    // 4) Advect velocity
-    advect(1, velX, velXPrev, velXPrev, velYPrev, dt);
-    advect(2, velY, velYPrev, velXPrev, velYPrev, dt);
-
-    // 5) Project again after advection
-    project(velX, velY, densityPrev, density);
-
-    // 6) Diffuse density
-    diffuse(0, densityPrev, density, 0.0001f, dt);
-    advect(0, density, densityPrev, velX, velY, dt);
-
-    // Reset sources for the next frame
-    std::fill(densityPrev.begin(), densityPrev.end(), 0.0f);
-    std::fill(velXPrev.begin(), velXPrev.end(), 0.0f);
-    std::fill(velYPrev.begin(), velYPrev.end(), 0.0f);
-}
-
-void FluidSim::addDensity(int x, int y, float amount) {
-    if (x < 0 || x >= width || y < 0 || y >= height) return;
-    density[idx(x, y)] += amount;
-}
-
-void FluidSim::addVelocity(int x, int y, float amountX, float amountY) {
-    if (x < 0 || x >= width || y < 0 || y >= height) return;
-    velX[idx(x, y)] += amountX;
-    velY[idx(x, y)] += amountY;
-}
-
-const std::vector<float>& FluidSim::getDensity() const {
-    return density;
-}
-
-int FluidSim::getWidth() const {
-    return width;
-}
-
-int FluidSim::getHeight() const {
-    return height;
-}
-
-int FluidSim::idx(int x, int y) const {
-    return x + y * width;
-}
-
-void FluidSim::addSource(std::vector<float>& field, const std::vector<float>& source, float dt) {
-    // TODO: Add source values to the field for each grid cell.
-    // This is typically: field[i] += dt * source[i]
-    for (int i = 0; i < size; ++i) {
-        field[i] += dt * source[i];
+    // Gravity + predict
+    for (int i = 0; i < n; ++i) {
+        particles[i].vy += gravity * dt;
+        predX[i] = particles[i].x + particles[i].vx * dt;
+        predY[i] = particles[i].y + particles[i].vy * dt;
+        predZ[i] = particles[i].z + particles[i].vz * dt;
     }
-}
 
-void FluidSim::diffuse(int b, std::vector<float>& field, const std::vector<float>& prevField, float diff, float dt) {
-    // TODO: Implement diffusion step using Gauss-Seidel relaxation.
-    // Use the boundary parameter `b` to set the correct fields on edges.
-    // The algorithm smooths out the field values over the grid.
-    field = prevField;
-    setBoundary(b, field);
-}
+    buildSpatialHash();
+    computeDensities();
+    computePressureAndViscosity(dt);
 
-void FluidSim::advect(int b, std::vector<float>& field, const std::vector<float>& prevField, const std::vector<float>& velX, const std::vector<float>& velY, float dt) {
-    // TODO: Implement advection of field using the velocity field.
-    // Trace each cell backward through the velocity field to sample `prevField`.
-    field = prevField;
-    setBoundary(b, field);
-}
-
-void FluidSim::project(std::vector<float>& velX, std::vector<float>& velY, std::vector<float>& p, std::vector<float>& div) {
-    // TODO: Project the velocity field to make it incompressible.
-    // Calculate divergence, solve for pressure, and subtract gradient.
-    std::fill(p.begin(), p.end(), 0.0f);
-    std::fill(div.begin(), div.end(), 0.0f);
-}
-
-void FluidSim::setBoundary(int b, std::vector<float>& field) {
-    // TODO: Apply boundary conditions to `field` depending on `b`.
-    // b == 0: scalar field (density)
-    // b == 1: horizontal velocity
-    // b == 2: vertical velocity
-    for (int x = 1; x < width - 1; ++x) {
-        field[idx(x, 0)] = field[idx(x, 1)];
-        field[idx(x, height - 1)] = field[idx(x, height - 2)];
+    // Integrate
+    for (int i = 0; i < n; ++i) {
+        particles[i].x += particles[i].vx * dt;
+        particles[i].y += particles[i].vy * dt;
+        particles[i].z += particles[i].vz * dt;
+        resolveCollision(particles[i]);
     }
-    for (int y = 1; y < height - 1; ++y) {
-        field[idx(0, y)] = field[idx(1, y)];
-        field[idx(width - 1, y)] = field[idx(width - 2, y)];
-    }
-    field[idx(0, 0)] = 0.5f * (field[idx(1, 0)] + field[idx(0, 1)]);
-    field[idx(0, height - 1)] = 0.5f * (field[idx(1, height - 1)] + field[idx(0, height - 2)]);
-    field[idx(width - 1, 0)] = 0.5f * (field[idx(width - 2, 0)] + field[idx(width - 1, 1)]);
-    field[idx(width - 1, height - 1)] = 0.5f * (field[idx(width - 2, height - 1)] + field[idx(width - 1, height - 2)]);
 }
