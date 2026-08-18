@@ -4,9 +4,10 @@ A real-time 3D fluid simulation built with OpenGL 3.3, GLFW, GLAD, and GLM. The 
 
 ---
 
-## Demo
+## Demo Video!
 
-<video src="demo_video.mp4" controls width="100%"></video>
+https://github.com/user-attachments/assets/61c9430f-aa3b-45e7-a0e1-ad6662865bda
+
 
 ---
 
